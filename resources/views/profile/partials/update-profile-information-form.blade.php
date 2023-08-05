@@ -13,7 +13,7 @@
         @csrf
     </form>
 
-    <form method="post" action="{{ route('profile.update') }}" class="mt-6 space-y-6">
+    <form method="post" action="{{ route('profile.update') }}" class="mt-6 space-y-6" enctype="multipart/form-data" method="POST">
         @csrf
         @method('patch')
 
@@ -48,8 +48,7 @@
         </div>
 
         <div>
-{{--            <livewire:profile.media-upload />--}}
-            @livewire('profile.media-upload')
+            @livewire('profile.avatar-upload')
         </div>
 
         <div class="flex items-center gap-4">

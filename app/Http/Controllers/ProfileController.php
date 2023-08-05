@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Livewire\Profile\MediaUpload as MediaUploadComponent;
 use App\Http\Requests\ProfileUpdateRequest;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -25,22 +24,21 @@ class ProfileController extends Controller
     /**
      * Update the user's profile information.
      */
-    public function update(ProfileUpdateRequest $request, MediaUploadComponent $media_upload): RedirectResponse
+    public function update(ProfileUpdateRequest $request): RedirectResponse
     {
-
-        //dd($request, $_POST, $media_upload, $request->hasFile('profileImage'), $_FILES);
-
-        $request->user()->fill($request->validated());
+        $user = $request->user();
+        $user->fill($request->validated());
 
         if ($request->user()->isDirty('email')) {
             $request->user()->email_verified_at = null;
         }
 
-//        if ($request->hasFile('profileImage') && $request->file('profileImage')->isValid()) {
-//            $request->user()->addMediaFromRequest('image')->toMediaCollection('featured_images')->getUrl();
-//        }
+        if ($request->hasFile('avatar') && $request->file('avatar')->isValid()) {
+            $user->clearMediaCollection('avatars');
+            $user->addMediaFromRequest('avatar')->toMediaCollection('avatars');
+        }
 
-        $request->user()->save();
+        $user->save();
 
         return Redirect::route('profile.edit')->with('status', 'profile-updated');
     }
