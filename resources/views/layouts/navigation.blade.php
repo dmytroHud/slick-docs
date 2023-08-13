@@ -1,6 +1,6 @@
 <nav x-data="{ open: false }" class="bg-white border-b border-gray-100">
     <!-- Primary Navigation Menu -->
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex justify-between h-16">
             <div class="flex">
                 <!-- Logo -->
@@ -15,6 +15,18 @@
                     <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
                         {{ __('Dashboard') }}
                     </x-nav-link>
+                    <x-dropdown align="left" width="48">
+                        <x-slot name="trigger" class="h-full">
+                            <x-nav-link class="h-full" :active="request()->route()->getPrefix() === '/space'">
+                                {{ __('Spaces') }}
+                            </x-nav-link>
+                        </x-slot>
+                        <x-slot name="content">
+                            <x-nav-link class="h-8 hover:border-b-0 border-b-0 px-4" :href="route('space.create')">
+                                {{ __('Create Space') }}
+                            </x-nav-link>
+                        </x-slot>
+                    </x-dropdown>
                 </div>
             </div>
 

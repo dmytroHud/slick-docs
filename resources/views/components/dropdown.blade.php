@@ -21,8 +21,8 @@ switch ($width) {
 }
 @endphp
 
-<div class="relative" x-data="{ open: false }" @click.outside="open = false" @close.stop="open = false">
-    <div @click="open = ! open">
+<div {!! $attributes->merge(['class' => 'relative']) !!} x-data="{ open: false }" @click.outside="open = false" @close.stop="open = false">
+    <div @click="open = ! open" class="h-full">
         {{ $trigger }}
     </div>
 
