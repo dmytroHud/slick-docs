@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\SpaceController;
 
 /*
 |--------------------------------------------------------------------------
@@ -27,5 +28,10 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
+
+Route::middleware('auth')->prefix('space')->group(function () {
+    Route::get('/create', [SpaceController::class, 'create'])->name('space.create');
+    Route::post('/store', [SpaceController::class, 'create'])->name('space.store');
+})->name('space');
 
 require __DIR__.'/auth.php';
