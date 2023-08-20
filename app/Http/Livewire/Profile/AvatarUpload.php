@@ -14,10 +14,7 @@ class AvatarUpload extends Component
 
     public function mount()
     {
-        $avatar = auth()->user()->getFirstMedia('avatars');
-        if ( ! empty($avatar)) {
-            $this->currentAvatar = $avatar->getFullUrl();
-        }
+        $this->currentAvatar = auth()->user()->getUserAvatar() ? : '';
     }
 
     public function render()

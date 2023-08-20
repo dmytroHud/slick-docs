@@ -3,7 +3,8 @@
 /public/build
 /public/hot
 /public/storage
-/storage/*.key
+/storage/*
+!/storage/app/public/default/
 /vendor
 .env
 .env.backup
@@ -17,3 +18,5 @@ yarn-error.log
 /.fleet
 /.idea
 /.vscode
+/.phpstorm.meta.php
+/_ide_helper.php
