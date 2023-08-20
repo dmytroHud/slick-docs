@@ -45,6 +45,38 @@ class User extends Authenticatable implements HasMedia
         'password' => 'hashed',
     ];
 
+    /**
+     * Get user custom avatar if exist
+     * @return string
+     */
+    public function getUserAvatar(): string
+    {
+        $media = $this->getFirstMedia('avatars');
+        if ( ! empty($media)) {
+            return $media->getFullUrl();
+        }
+
+        return '';
+    }
+
+    /**
+     * Get default avatar
+     * @return string
+     */
+    public function getDefaultAvatar(): string
+    {
+        return asset('storage/default/avatar.jpg');
+    }
+
+    /**
+     * Get user custom avatar or default
+     * @return string
+     */
+    public function getAvatar(): string
+    {
+        return $this->getUserAvatar() ?: $this->getDefaultAvatar();
+    }
+
     public function articles(): HasMany
     {
         return $this->hasMany(Article::class, 'author_id');

@@ -8,7 +8,7 @@ use Illuminate\View\Component;
 
 class Input extends Component
 {
-
+    public string $inputClasses = 'mt-2 border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm block w-full';
     public string $label;
     public string $name;
     public string $type;
@@ -16,11 +16,16 @@ class Input extends Component
     /**
      * Create a new component instance.
      */
-    public function __construct(string $label, string $name, string $type = 'text')
-    {
+    public function __construct(
+        string $label,
+        string $name,
+        string $inputClasses = '',
+        string $type = 'text'
+    ) {
         $this->label = $label;
-        $this->name  = $name;
-        $this->type  = $type;
+        $this->name = $name;
+        $this->type = $type;
+        $this->inputClasses = ! empty($inputClasses) ? $this->inputClasses.' '.$inputClasses : $this->inputClasses;
     }
 
     /**
