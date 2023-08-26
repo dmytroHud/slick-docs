@@ -43,10 +43,6 @@
                     wire.call('loadMore');
                 }
             }
-
-            function removeUserElement(element, wire) {
-                console.log(element.remove());
-            }
         </script>
     @endif
 
