@@ -12,7 +12,7 @@
                  @scroll="onScroll(event, $wire)">
                 @foreach($users as $key => $user)
                     <div class="user w-full p-1 hover:bg-gray-50 cursor-pointer"
-                         wire:click.debounce.250ms="selectUser({{$user}})"
+                         wire:click.prevent="selectUser({{$user}})"
                          @click="$el.remove()"
                     >
                         {{$user->name}}
