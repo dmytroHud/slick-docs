@@ -45,16 +45,21 @@ class UsersSelect extends Component
 
     public function selectUser(User $user)
     {
-        $this->users = $this->users->filter(function (User $item) use ($user) {
-            return $item->toArray() !== $user->toArray();
+        $this->users = $this->users->reject(function (User $item) use ($user) {
+            return $item->is($user);
         });
 
         $this->selectedUsers->push($user);
+        $this->selectedUsers = $this->selectedUsers->unique();
     }
 
     public function unselectUser(User $user)
     {
+        $this->selectedUsers = $this->selectedUsers->reject(function (User $item) use ($user) {
+            return $item->is($user);
+        });
 
+        $this->users->push($user);
     }
 
     public function render()
@@ -64,18 +69,31 @@ class UsersSelect extends Component
 
     protected function getUsers(): Collection
     {
-        $selected_users = $this->selectedUsers->map(function (User $user) {
-            return $user->id;
-        });
+        $query = User::query();
+        $this->applySearchConditions($query);
+        $this->applySelectedUsersCondition($query);
 
-        return User::when($this->search, function (Builder $query, string $search) {
-            $query->where('name', 'like', "%{$search}%")
-                  ->orWhere('email', 'like', "%{$search}%");
-        })->when(! $this->selectedUsers->isEmpty(), function (Builder $query) use ($selected_users) {
-//            dd($selected_users);
-        })->offset($this->offset)
-                   ->limit(self::PER_PAGE)
-                   ->orderByDesc('created_at')
-                   ->get();
+        return $query->offset($this->offset)
+                     ->limit(self::PER_PAGE)
+                     ->orderByDesc('created_at')
+                     ->get();
+
+    }
+
+    protected function applySearchConditions(Builder &$query)
+    {
+        return $query->when($this->search, function (Builder $query, string $search) {
+            $query->where(function (Builder $subQuery) use ($search) {
+                $subQuery->where('name', 'like', "%{$search}%")
+                         ->orWhere('email', 'like', "%{$search}%");
+            });
+        });
+    }
+
+    protected function applySelectedUsersCondition(Builder &$query)
+    {
+        return $query->when(!$this->selectedUsers->isEmpty(), function (Builder $query) {
+            $query->whereNotIn('id', $this->selectedUsers->pluck('id')->toArray());
+        });
     }
 }
