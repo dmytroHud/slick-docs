@@ -1,9 +1,9 @@
 <div>
     <x-forms.input type="search"
                    label="Search for user"
-                   name="user-search">
-        wire:model.debounce.250ms="search"
-    </x-forms.input>
+                   name="user-search"
+                   input-attrs="wire:model.debounce.250ms='search'"
+    />
 
     @if($users)
         <div class="users-wrap flex w-full">
@@ -31,6 +31,11 @@
                         </div>
                     @endforeach
                 </div>
+                <select name="{{$name}}[]" multiple class="hidden">
+                    @foreach($selectedUsers as $selectedUser)
+                        <option value="{{$selectedUser->id}}" selected>{{$selectedUser->id}}</option>
+                    @endforeach
+                </select>
             @endif
         </div>
 
@@ -45,5 +50,5 @@
             }
         </script>
     @endif
-
+    <x-forms.error :messages="$errors->get($name)" class="mt-2"/>
 </div>

@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -52,7 +53,7 @@ class User extends Authenticatable implements HasMedia
     public function getUserAvatar(): string
     {
         $media = $this->getFirstMedia('avatars');
-        if ( ! empty($media)) {
+        if (!empty($media)) {
             return $media->getFullUrl();
         }
 
@@ -74,11 +75,16 @@ class User extends Authenticatable implements HasMedia
      */
     public function getAvatar(): string
     {
-        return $this->getUserAvatar() ?: $this->getDefaultAvatar();
+        return $this->getUserAvatar() ? : $this->getDefaultAvatar();
     }
 
     public function articles(): HasMany
     {
         return $this->hasMany(Article::class, 'author_id');
+    }
+
+    public function spaces(): BelongsToMany
+    {
+        return $this->belongsToMany(Space::class)->withTimestamps();
     }
 }

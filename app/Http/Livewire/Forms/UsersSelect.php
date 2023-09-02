@@ -5,7 +5,6 @@ namespace App\Http\Livewire\Forms;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Support\Facades\Log;
 use Livewire\Component;
 
 class UsersSelect extends Component
@@ -17,6 +16,7 @@ class UsersSelect extends Component
     public string $search = '';
     public int $offset = 0;
     public string $prevSearch = '';
+    public string $name;
 
     public function mount()
     {
@@ -75,7 +75,7 @@ class UsersSelect extends Component
 
         return $query->offset($this->offset)
                      ->limit(self::PER_PAGE)
-                     ->orderByDesc('created_at')
+                     ->orderBy('name')
                      ->get();
 
     }
