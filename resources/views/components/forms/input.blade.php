@@ -1,14 +1,15 @@
 <div {!! $attributes->merge(['class' => 'flex flex-col max-w-sm font-medium text-sm text-gray-700']) !!}>
     @if(isset($label))
-        <label for="{{$name}}">
+        <x-forms.label for="{{$name}}">
             {{$label}}
-        </label>
+        </x-forms.label>
     @endif
-
     <input class="{{$inputClasses}}"
            type="{{$type}}"
            name="{{$name}}"
-            {{$slot}}
+           id="{{$name}}"
+           value="{{$value}}"
+        {!! $inputAttributes !!}
     >
     <x-forms.error :messages="$errors->get($name)" class="mt-2"/>
 </div>

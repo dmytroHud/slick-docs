@@ -47,9 +47,7 @@
             @endif
         </div>
 
-        <div>
-            @livewire('profile.avatar-upload')
-        </div>
+        <livewire:forms.file-upload name="avatar" :current-image="auth()->user()->getUserAvatar() ? : ''"/>
 
         <div class="flex items-center gap-4">
             <x-primary-button>{{ __('Save') }}</x-primary-button>

@@ -31,7 +31,7 @@ Route::middleware('auth')->group(function () {
 
 Route::middleware('auth')->prefix('space')->group(function () {
     Route::get('/create', [SpaceController::class, 'create'])->name('space.create');
-    Route::post('/store', [SpaceController::class, 'create'])->name('space.store');
+    Route::post('/store', [SpaceController::class, 'store'])->name('space.store');
 })->name('space');
 
 require __DIR__.'/auth.php';
