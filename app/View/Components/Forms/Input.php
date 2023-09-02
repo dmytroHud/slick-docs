@@ -9,7 +9,7 @@ use Illuminate\View\Component;
 class Input extends Component
 {
     public string $inputClasses = 'mt-2 border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm block w-full';
-    public string $inputAttrs;
+    public string $inputAttributes;
     public string $label;
     public string $name;
     public string $type;
@@ -24,14 +24,14 @@ class Input extends Component
         string $label = '',
         string|int|float $value = '',
         string $inputClasses = '',
-        string $inputAttrs = ''
+        string $inputAttributes = ''
     ) {
         $this->label = $label;
         $this->name = $name;
         $this->type = $type;
         $this->value = $value;
         $this->inputClasses = !empty($inputClasses) ? $this->inputClasses.' '.$inputClasses : $this->inputClasses;
-        $this->inputAttrs = $inputAttrs;
+        $this->inputAttributes = $inputAttributes;
     }
 
     /**

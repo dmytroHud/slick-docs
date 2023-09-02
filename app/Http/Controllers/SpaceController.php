@@ -34,4 +34,8 @@ class SpaceController extends Controller
     public function update() {
 
     }
+
+    public function all() {
+        
+    }
 }

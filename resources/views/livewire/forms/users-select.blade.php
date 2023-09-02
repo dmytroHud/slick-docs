@@ -2,7 +2,7 @@
     <x-forms.input type="search"
                    label="Search for user"
                    name="user-search"
-                   input-attrs="wire:model.debounce.250ms='search'"
+                   input-attributes="wire:model.debounce.250ms='search'"
     />
 
     @if($users)

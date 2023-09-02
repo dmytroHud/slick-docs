@@ -1,6 +1,6 @@
 @php
     $image_url = !empty($image) ? $image->temporaryUrl() : $currentImage;
-    $inputAttrs = 'wire:model="image" accept="image/png, image/jpeg, image/jpg"';
+    $inputAttributes = 'wire:model="image" accept="image/png, image/jpeg, image/jpg"';
 @endphp
 
 <div>
@@ -12,7 +12,7 @@
     <x-forms.input type="file"
                    name="{{$name}}"
                    input-classes="hidden"
-                   :input-attrs="$inputAttrs"
+                   :input-attributes="$inputAttributes"
     />
 
     @if ($image_url)

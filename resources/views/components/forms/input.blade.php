@@ -9,7 +9,7 @@
            name="{{$name}}"
            id="{{$name}}"
            value="{{$value}}"
-        {!! $inputAttrs !!}
+        {!! $inputAttributes !!}
     >
     <x-forms.error :messages="$errors->get($name)" class="mt-2"/>
 </div>
