@@ -18,9 +18,9 @@ class UsersSelect extends Component
     public string $prevSearch = '';
     public string $name;
 
-    public function mount()
+    public function mount(Collection $users = new Collection())
     {
-        $this->selectedUsers = new Collection();
+        $this->selectedUsers = $users;
         $this->users         = $this->getUsers();
     }
 
