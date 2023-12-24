@@ -30,9 +30,10 @@ Route::middleware('auth')->group(function () {
 });
 
 Route::middleware('auth')->prefix('spaces')->group(function () {
+    Route::get('/', [SpaceController::class, 'index'])->name('space.index');
     Route::get('/create', [SpaceController::class, 'create'])->name('space.create');
-    Route::patch('/{slug}', [SpaceController::class, 'update'])->name('space.update');
     Route::get('/{slug}/edit', [SpaceController::class, 'edit'])->name('space.edit');
+    Route::patch('/{slug}', [SpaceController::class, 'update'])->name('space.update');
     Route::post('/store', [SpaceController::class, 'store'])->name('space.store');
 })->name('space');
 

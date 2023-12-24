@@ -22,7 +22,7 @@
                 <x-forms.textarea label="Description" name="space-description">
                     {{ $space->description }}
                 </x-forms.textarea>
-                <livewire:forms.users-select name="selected-users" :users="$space->getAttachedUsers()"/>
+                <livewire:forms.users-select name="selected-users" :users="$space->users"/>
 
                 <x-primary-button>
                     {{ __('Update') }}
