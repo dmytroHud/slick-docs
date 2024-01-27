@@ -23,6 +23,9 @@
             @empty
                 No spaces
             @endforelse
+            <div class="mt-10">
+                {{ $spaces->onEachSide(5)->links() }}
+            </div>
         </div>
     </div>
 </x-app-layout>
