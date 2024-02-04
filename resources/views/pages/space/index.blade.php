@@ -15,16 +15,15 @@
                         {{$space->title}}
                     </div>
                     <div class="w-2/12 flex row justify-end">
-                        <a href="#" class="btn-primary mr-2">Enter</a>
+                        <a href="{{route('space.single', $space->slug)}}" class="btn-primary mr-2">Enter</a>
                         <a href="{{route('space.edit', $space->slug)}}" class="btn-secondary">Edit</a>
                     </div>
                 </div>
-
             @empty
                 No spaces
             @endforelse
             <div class="mt-10">
-                {{ $spaces->onEachSide(5)->links() }}
+                {{ $spaces->onEachSide(10)->links() }}
             </div>
         </div>
     </div>

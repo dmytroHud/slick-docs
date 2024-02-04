@@ -61,10 +61,19 @@ class SpaceController extends Controller
 
     public function index()
     {
-        $spaces = Space::with(['users', 'media'])->OrderByDesc('created_at')->paginate(5);
+        $spaces = Space::with(['users', 'media'])->OrderByDesc('created_at')->paginate(10);
 
         return view('pages.space.index', [
             'spaces' => $spaces
+        ]);
+    }
+
+    public function single($slug)
+    {
+        $space = Space::whereSlug($slug)->with(['users', 'media', 'articles'])->firstOrFail();
+
+        return view('pages.space.single', [
+            'space' => $space
         ]);
     }
 

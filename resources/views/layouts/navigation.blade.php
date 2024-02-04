@@ -16,7 +16,7 @@
                     </x-nav-link>
                     <x-dropdown align="left" width="48">
                         <x-slot name="trigger" class="h-full">
-                            <x-nav-link class="h-full" :active="request()->route()->getPrefix() === '/spaces'">
+                            <x-nav-link class="h-full cursor-pointer" :active="request()->route()->getPrefix() === '/spaces'">
                                 {{ __('Spaces') }}
                             </x-nav-link>
                         </x-slot>
