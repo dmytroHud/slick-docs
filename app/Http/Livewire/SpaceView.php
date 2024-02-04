@@ -46,16 +46,16 @@ class SpaceView extends Component
         $this->currentArticle = $this->articles->first();
     }
 
-    public function setNewParent($newParentId, $draggingArticleId)
+    public function setNewParent(int $draggingArticleId, int $newParentId = 0)
     {
-        if ($newParentId === $draggingArticleId) {
+        if ($draggingArticleId === $newParentId) {
             return;
         }
 
         $article = Article::find($draggingArticleId);
         $article->parent_id = $newParentId;
         $article->save();
-        $this->articles = Article::all();
+        $this->articles = $this->space->articles()->get();
     }
 
     public function buildTree(Collection $articles, int $parentId = null): Collection

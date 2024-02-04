@@ -8,14 +8,12 @@
                 {{ __($space->title) }}
             </h2>
         </div>
-        <div class="pt-4 pr-4">
+        <div class="pt-4 pr-4 overflow-x-hidden">
             @foreach($this->buildTree($articles) as $article)
-                <div class="py-1">
-                    <x-article-item
-                        :article="$article"
-                        :current-article="$this->currentArticle"
-                    />
-                </div>
+                <x-article-item
+                    :article="$article"
+                    :current-article="$this->currentArticle"
+                />
             @endforeach
         </div>
 
