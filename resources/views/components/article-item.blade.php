@@ -13,7 +13,7 @@
     $hasChild = !$article->children->isEmpty();
 @endphp
 
-<ul class="pl-4 relative {{$isChild ? 'is-child' : 'drag-root'}}"
+<ul class="pl-4 relative article-item {{$isChild ? 'is-child' : 'drag-root'}}"
     x-data="{
                 open: true,
                 getDraggingElement: () => document.querySelector('[dragging=true]'),
@@ -24,16 +24,30 @@
 
                     return Boolean(Array.from(draggingElementChildren).find((node) => node.isEqualNode(dropElement)));
                 },
+                isSameParent: (event) => {
+                    let dropElement = event.target.parentElement;
+                    let draggingElement = $data.getDraggingElement();
+
+                    if (
+                        dropElement.closest('.article-item.is-child') !== null
+                        && draggingElement.closest('.article-item.is-child') !== null
+                    ) {
+
+                        let dropElementContainer = dropElement.closest('.article-item.is-child').parentElement.closest('.article-item');
+                        let draggingElementContainer = draggingElement.closest('.article-item.is-child').parentElement.closest('.article-item');
+                        return dropElementContainer.isSameNode(draggingElementContainer);
+                    }
+                },
                 removeHighlighted: (event) => {
                     event.target.parentElement.classList.remove('article-item-drop-parent-highlighted');
                     event.target.parentElement.classList.remove('article-item-drop-no-parent-highlighted');
-                    event.target.parentElement.classList.remove('article-item-drop-position-highlighted');
+                    event.target.parentElement.classList.remove('article-item-drop-order-highlighted');
                 },
                 showOverlay: () => {
                     document.querySelectorAll('[drop-zone-parent]').forEach(element => {
                         element.classList.remove('hidden');
                     });
-                    document.querySelectorAll('[drop-zone-position]').forEach(element => {
+                    document.querySelectorAll('[drop-zone-order]').forEach(element => {
                         element.classList.remove('hidden');
                     });
                     document.querySelectorAll('[drop-zone-no-parent]').forEach(element => {
@@ -44,7 +58,7 @@
                     document.querySelectorAll('[drop-zone-parent]').forEach(element => {
                         element.classList.add('hidden');
                     });
-                    document.querySelectorAll('[drop-zone-position]').forEach(element => {
+                    document.querySelectorAll('[drop-zone-order]').forEach(element => {
                         element.classList.add('hidden');
                     });
                     document.querySelectorAll('[drop-zone-no-parent]').forEach(element => {
@@ -54,17 +68,23 @@
                 setParent: (draggingArticleId, newParentId) => {
                    $wire.call('setNewParent', draggingArticleId, newParentId);
                 },
+                setOrder: (draggingArticleId, dropArticleId) => {
+                    $wire.call('setOrder', draggingArticleId, dropArticleId);
+                },
                 handleDrop: (e) => {
                     let dropElement = e.target;
                     let draggingElement = $data.getDraggingElement();
-                    let newParentId = parseInt(dropElement.parentElement.getAttribute('article-id'));
+                    let dropArticleId = parseInt(dropElement.parentElement.getAttribute('article-id'));
                     let draggingArticleId = parseInt(draggingElement.getAttribute('article-id'));
 
                     if (dropElement.hasAttribute('drop-zone-no-parent')) {
                         $data.setParent(draggingArticleId, 0);
                     }
                     if (!$data.isOverlap(e) && dropElement.hasAttribute('drop-zone-parent')) {
-                        $data.setParent(draggingArticleId, newParentId);
+                        $data.setParent(draggingArticleId, dropArticleId);
+                    }
+                    if (e.target.hasAttribute('drop-zone-order') && $data.isSameParent(e) === true) {
+                        $data.setOrder(draggingArticleId, dropArticleId);
                     }
 
                     $data.removeHighlighted(e);
@@ -77,8 +97,8 @@
                     if (e.target.hasAttribute('drop-zone-no-parent')) {
                         dropElement.classList.add('article-item-drop-no-parent-highlighted');
                     }
-                    if (e.target.hasAttribute('drop-zone-position')) {
-                        dropElement.classList.add('article-item-drop-position-highlighted');
+                    if (e.target.hasAttribute('drop-zone-order') && $data.isSameParent(e) === true) {
+                        dropElement.classList.add('article-item-drop-order-highlighted');
                     }
                 },
                 omitItem: (e) => {
@@ -131,7 +151,7 @@
             >
             </div>
             <div class="w-[50%] h-full absolute top-0 left-0 z-10 hidden"
-                 drop-zone-position
+                 drop-zone-order
             >
             </div>
             <div class="absolute left-0 top-0 w-[100px] h-full z-50 translate-x-[-100%] hidden"

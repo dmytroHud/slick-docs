@@ -100,6 +100,18 @@ class Space extends Model implements HasMedia
     }
 
     /**
+     * Get the ordered articles associated with the space.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
+    public function orderedArticles(): BelongsToMany
+    {
+        return $this->belongsToMany(Article::class)
+                    ->withPivot('order')
+                    ->orderBy('order');
+    }
+
+    /**
      * Get the users associated with this model.
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany

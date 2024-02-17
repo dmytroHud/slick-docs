@@ -12,6 +12,7 @@ namespace App\Http\Livewire;
 use App\Models\Article;
 use App\Models\Space;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Support\Facades\DB;
 use Livewire\Component;
 
 class SpaceView extends Component
@@ -42,10 +43,18 @@ class SpaceView extends Component
     public function mount(Space $space)
     {
         $this->space = $space;
-        $this->articles = $space->articles;
-        $this->currentArticle = $this->articles->first();
+        $this->articles = $space->orderedArticles;
+        $this->currentArticle = $this->articles->first() ? : new Article();
     }
 
+    /**
+     * Sets a new parent for the given dragging article.
+     *
+     * @param  int  $draggingArticleId  The ID of the dragging article.
+     * @param  int  $newParentId  The ID of the new parent. Default is 0.
+     *
+     * @return void
+     */
     public function setNewParent(int $draggingArticleId, int $newParentId = 0)
     {
         if ($draggingArticleId === $newParentId) {
@@ -55,9 +64,43 @@ class SpaceView extends Component
         $article = Article::find($draggingArticleId);
         $article->parent_id = $newParentId;
         $article->save();
-        $this->articles = $this->space->articles()->get();
+        $this->fetchArticles();
     }
 
+    public function setOrder(int $draggingArticleId, int $dropArticleId)
+    {
+
+        DB::beginTransaction();
+        try {
+            $dropArticle = Article::findOrFail($dropArticleId);
+            $draggingArticle = Article::findOrFail($draggingArticleId);
+            $dropArticleOrder = $dropArticle->getOrder() + 1;
+
+            $draggingArticle->updateOrder($dropArticleOrder);
+
+            DB::table('article_space')
+                ->where('space_id', '=', $this->space->id)
+              ->where('order', '>=', $dropArticleOrder)
+              ->where('article_id', '!=', $draggingArticleId)
+              ->increment('order');
+
+            DB::commit();
+        } catch(\Exception $e) {
+            DB::rollback();
+            throw $e;
+        }
+
+        $this->fetchArticles();
+    }
+
+    /**
+     * Builds a tree structure from a collection of articles.
+     *
+     * @param  Collection  $articles  The collection of articles.
+     * @param  int|null  $parentId  The parent id to start building the tree from. Defaults to null.
+     *
+     * @return Collection The tree structure as a collection of articles.
+     */
     public function buildTree(Collection $articles, int $parentId = null): Collection
     {
         $tree = [];
@@ -77,6 +120,13 @@ class SpaceView extends Component
         return new Collection($tree);
     }
 
+    /**
+     * Sets the current article based on the given article ID.
+     *
+     * @param  int  $articleId  The ID of the article.
+     *
+     * @return void
+     */
     public function setCurrentArticle(int $articleId): void
     {
         $this->currentArticle = $this->articles->firstWhere('id', $articleId);
@@ -90,5 +140,10 @@ class SpaceView extends Component
     public function render()
     {
         return view('livewire.space-view');
+    }
+
+    protected function fetchArticles()
+    {
+        $this->articles = $this->space->orderedArticles()->get();
     }
 }

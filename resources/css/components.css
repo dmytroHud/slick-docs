@@ -48,7 +48,7 @@
         content: '';
     }
 
-    .article-item-drop-position-highlighted:after {
+    .article-item-drop-order-highlighted:after {
         @apply block absolute h-[2px] w-full bg-gray-400 bottom-0 right-0;
         content: '';
     }
