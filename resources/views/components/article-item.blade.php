@@ -1,13 +1,12 @@
 @props([
     'article' => null,
     'isChild' => false,
-    'currentArticle' => false
 ])
 
 @php
     $linkClasses = sprintf(
         '%s',
-         $currentArticle === $article ? 'bg-gray-300' : ''
+         $this->currentArticle === $article ? 'bg-gray-300' : ''
         );
 
     $hasChild = !$article->children->isEmpty();
@@ -16,6 +15,16 @@
 <ul class="pl-4 relative article-item {{$isChild ? 'is-child' : 'drag-root'}}"
     x-data="{
                 open: true,
+                setCurrentArticleURLParam: (articleSlug) => {
+                    let params = new URLSearchParams(window.location.search);
+                    params.set('article', articleSlug);
+                    let newUrl = window.location.protocol + '//' + window.location.host + window.location.pathname + '?' + params.toString();
+                    window.history.pushState({path: newUrl}, '', newUrl);
+                },
+                setCurrentArticle: (articleSlug) => {
+                    $data.setCurrentArticleURLParam(articleSlug);
+                    $wire.setCurrentArticle(articleSlug);
+                },
                 getDraggingElement: () => document.querySelector('[dragging=true]'),
                 isOverlap: (event) => {
                     let dropElement = event.target.parentElement;
@@ -145,10 +154,12 @@
                 </span>
             </div>
 
-            <a href="#article={{$article->slug}}"
-               wire:click="setCurrentArticle({{$article->id}})"
+            <a href="#"
                class="block w-full p-2 pl-1"
-               @click="open = true"
+               @click.prevent="
+                    open = true;
+                    $data.setCurrentArticle('{{$article->slug}}');
+               "
                draggable="false">
                     <span class="leading-none">
                         {{ $article->title }}
@@ -173,7 +184,6 @@
                 <div x-show="open">
                     <x-article-item :article="$childArticle"
                                     :is-child="true"
-                                    :current-article="$currentArticle"
                     />
                 </div>
             @endforeach

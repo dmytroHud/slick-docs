@@ -12,14 +12,43 @@
             @foreach($this->buildTree($articles) as $article)
                 <x-article-item
                     :article="$article"
-                    :current-article="$this->currentArticle"
                 />
             @endforeach
+            <div class="pl-5">
+                <a href="#"
+                   class="w-full flex items-center hover:bg-gray-200 transition-all leading-none p-2"
+                   wire:click.prevent="addNewArticle"
+                >
+                    + Add Article
+                </a>
+            </div>
         </div>
-
-        {{--        @dump(Str::random(40))--}}
     </div>
     <div class="w-9/12 bg-white h-screen">
-        {!! $currentArticle->content !!}
+        <div class="py-6 px-4">
+            <input type="text"
+                   wire:model.lazy="currentArticle.title"
+                   class="w-full bg-gray-100 border-transparent text-xl focus:outline-none focus:border-transparent focus:shadow-none"
+                   style="box-shadow: 0 0 #0000 !important;"
+            />
+        </div>
+
+        <div class="px-4 h-full">
+            <div id="editor">
+                {!! $currentArticle->content !!}
+            </div>
+        </div>
+        <script src="https://cdn.jsdelivr.net/npm/quill@2.0.0-rc.2/dist/quill.js"></script>
+        <script>
+            const options = {
+                debug: 'info',
+                modules: {
+                    toolbar: true,
+                },
+                placeholder: 'Compose an epic...',
+                theme: 'snow'
+            };
+            const quill = new Quill('#editor', options);
+        </script>
     </div>
 </div>

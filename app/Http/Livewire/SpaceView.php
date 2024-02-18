@@ -27,14 +27,18 @@ class SpaceView extends Component
     /**
      * Array of articles.
      *
-     * @var Collection|Article[]
+     * @var Collection<Article>
      */
     public Collection $articles;
 
     public Article $currentArticle;
 
+    protected $rules = [
+        'currentArticle.title' => 'string'
+    ];
+
     /**
-     * Mount the component with the given space.
+     * Mount the component with the given space
      *
      * @param  Space  $space  The space instance to be mounted.
      *
@@ -44,7 +48,26 @@ class SpaceView extends Component
     {
         $this->space = $space;
         $this->articles = $space->orderedArticles;
-        $this->currentArticle = $this->articles->first() ? : new Article();
+        $this->currentArticle = $this->getCurrentArticleSlugFromURL()
+            ? $this->articles->firstWhere('slug', $this->getCurrentArticleSlugFromURL())
+            : new Article();
+    }
+
+    public function addNewArticle()
+    {
+        Article::factory()->create([
+            'space_id' => $this->space->id,
+            'title' => 'Untitled'
+        ]);
+
+        $this->fetchArticles();
+    }
+
+    public function updatedCurrentArticle($value)
+    {
+        $this->currentArticle->save();
+        $index = $this->articles->search(fn(Article $article) => $article->id === $this->currentArticle->id);
+        $this->articles[$index] = $this->currentArticle;
     }
 
     /**
@@ -79,13 +102,13 @@ class SpaceView extends Component
             $draggingArticle->updateOrder($dropArticleOrder);
 
             DB::table('article_space')
-                ->where('space_id', '=', $this->space->id)
+              ->where('space_id', '=', $this->space->id)
               ->where('order', '>=', $dropArticleOrder)
               ->where('article_id', '!=', $draggingArticleId)
               ->increment('order');
 
             DB::commit();
-        } catch(\Exception $e) {
+        } catch (\Exception $e) {
             DB::rollback();
             throw $e;
         }
@@ -121,15 +144,15 @@ class SpaceView extends Component
     }
 
     /**
-     * Sets the current article based on the given article ID.
+     * Sets the current article based on the given article slug.
      *
-     * @param  int  $articleId  The ID of the article.
+     * @param  string  $articleSlug  The slug of the article.
      *
      * @return void
      */
-    public function setCurrentArticle(int $articleId): void
+    public function setCurrentArticle(string $articleSlug): void
     {
-        $this->currentArticle = $this->articles->firstWhere('id', $articleId);
+        $this->currentArticle = $this->articles->firstWhere('slug', $articleSlug);
     }
 
     /**
@@ -145,5 +168,10 @@ class SpaceView extends Component
     protected function fetchArticles()
     {
         $this->articles = $this->space->orderedArticles()->get();
+    }
+
+    protected function getCurrentArticleSlugFromURL()
+    {
+        return request()->get('article') ? : null;
     }
 }
