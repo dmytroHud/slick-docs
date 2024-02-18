@@ -29,19 +29,27 @@
                     let draggingElement = $data.getDraggingElement();
 
                     if (
+                        draggingElement.closest('.article-item').classList.contains('drag-root')
+                        && draggingElement.closest('.article-item').classList.contains('drag-root')
+                    ) {
+                        return true;
+                    }
+
+                    if (
                         dropElement.closest('.article-item.is-child') !== null
                         && draggingElement.closest('.article-item.is-child') !== null
                     ) {
-
                         let dropElementContainer = dropElement.closest('.article-item.is-child').parentElement.closest('.article-item');
                         let draggingElementContainer = draggingElement.closest('.article-item.is-child').parentElement.closest('.article-item');
                         return dropElementContainer.isSameNode(draggingElementContainer);
                     }
+
+                    return false;
                 },
                 removeHighlighted: (event) => {
                     event.target.parentElement.classList.remove('article-item-drop-parent-highlighted');
                     event.target.parentElement.classList.remove('article-item-drop-no-parent-highlighted');
-                    event.target.parentElement.classList.remove('article-item-drop-order-highlighted');
+                    event.target.closest('.article-item').classList.remove('article-item-drop-order-highlighted');
                 },
                 showOverlay: () => {
                     document.querySelectorAll('[drop-zone-parent]').forEach(element => {
@@ -98,7 +106,7 @@
                         dropElement.classList.add('article-item-drop-no-parent-highlighted');
                     }
                     if (e.target.hasAttribute('drop-zone-order') && $data.isSameParent(e) === true) {
-                        dropElement.classList.add('article-item-drop-order-highlighted');
+                        dropElement.closest('.article-item').classList.add('article-item-drop-order-highlighted');
                     }
                 },
                 omitItem: (e) => {
